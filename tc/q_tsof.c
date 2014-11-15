@@ -28,15 +28,12 @@ static void explain(void)
 	fprintf(stderr, "Usage: ... tsof borders B1 B2...\n");
 }
 
-#define usage() return(-1)
-
 static int tsof_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
 {
-//	int ok=0;
 	int borders_mode = 0;
 	int idx = 0;
 	struct tc_tsof_qopt opt;
-///	struct rtattr *nest;
+	struct rtattr *nest;
 ///	unsigned char mq = 0;
 
 	while (argc > 0) {
@@ -45,6 +42,7 @@ static int tsof_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct n
 				fprintf(stderr, "Error: duplicate borders\n");
 				return -1;
 			}
+			borders_mode = 1;
 		} else if (strcmp(*argv, "help") == 0) {
 			explain();
 			return -1;
@@ -68,13 +66,14 @@ static int tsof_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct n
 		argc--; argv++;
 	}
 
-	opt.bands = idx;
-/****
+	opt.bands = idx+1;
+
 	nest = addattr_nest_compat(n, 1024, TCA_OPTIONS, &opt, sizeof(opt));
-	if (mq)
+/*	if (mq)
 		addattr_l(n, 1024, TCA_PRIO_MQ, NULL, 0);
-	addattr_nest_compat_end(n, nest);
 */
+	addattr_nest_compat_end(n, nest);
+
 	return 0;
 }
 
@@ -82,15 +81,16 @@ int tsof_print_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
 {
 	int i;
 	struct tc_tsof_qopt *qopt;
-///	struct rtattr *tb[TCA_PRIO_MAX+1];
+	// TODO: fix this -> get rid of PRIO
+	struct rtattr *tb[TCA_PRIO_MAX+1];
 
 	if (opt == NULL)
 		return 0;
-/*****
+
 	if (parse_rtattr_nested_compat(tb, TCA_PRIO_MAX, opt, qopt,
 					sizeof(*qopt)))
                 return -1;
-*/
+
 	fprintf(f, "borders");
 	for (i=0; i<qopt->bands-1; i++)
 		fprintf(f, " %d", qopt->borders[i]);
