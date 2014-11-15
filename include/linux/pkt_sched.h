@@ -156,6 +156,16 @@ struct tc_plug_qopt {
 	__u32           limit;
 };
 
+/* TSOF section */
+
+#define TCQ_TSOF_BANDS	16
+
+struct tc_tsof_qopt
+{
+	int bands;
+	unsigned borders[TCQ_TSOF_BANDS-1];
+};
+
 /* TBF section */
 
 struct tc_tbf_qopt {

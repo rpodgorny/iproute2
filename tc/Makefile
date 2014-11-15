@@ -11,6 +11,7 @@ TCMODULES += q_sfq.o
 TCMODULES += q_red.o
 TCMODULES += q_prio.o
 TCMODULES += q_tbf.o
+TCMODULES += q_tsof.o
 TCMODULES += q_cbq.o
 TCMODULES += q_rr.o
 TCMODULES += q_multiq.o
